@@ -50,6 +50,9 @@ public class LogQueryHandler implements IBaseRequestHandler {
         if (event == null || event.isEmpty()) {
             return Utils.createResponse(GSON.toJson(APIResponse.getSuccessResponse("")), JSON_CONTENT_TYPE, HttpResponseStatus.OK);
         }
+        if (StringUtils.isBlank((fromCreationTimeStamp)) && StringUtils.isBlank((toCreationTimeStamp))) {
+            return Utils.createResponse(GSON.toJson(APIResponse.getSuccessResponse(event)), JSON_CONTENT_TYPE, HttpResponseStatus.OK);
+        }
         List<EventDetails> events = new ArrayList<>();
         if (StringUtils.isNotBlank((fromCreationTimeStamp))) {
             for (Map.Entry<Long, EventDetails> entry : event.entrySet()) {
