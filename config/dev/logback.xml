@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
+<configuration scan="true" scanPeriod="30 seconds">
+
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <!-- Log message format -->
         <encoder>
@@ -7,22 +8,47 @@
         </encoder>
     </appender>
     <!-- Ned appender to write to file -->
-    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- Name of the file where the log messages are written -->
-        <file>/data/logs/myApp1.log</file>
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        <file>/data/logs/nettylog.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%date [%thread] [%X{requestId}] [%X{uid}] %level [%file:%line] %msg%n</Pattern>
         </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/data/logs/nettylog.log.%d{yyyy-MM-dd-HH}.%i.gz</fileNamePattern>
+            <maxHistory>3000</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>1GB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
     </appender>
-    <!--<logger name="netty" level="WARN">-->
-        <!--<appender-ref ref="FILE" />-->
-    <!--</logger>-->
-    <logger name="netty" level="INFO">
+    <appender name="ASYNC_FILE" queueSize="10000" class="ch.qos.logback.classic.AsyncAppender">
         <appender-ref ref="FILE" />
+        <includeCallerData>true</includeCallerData>
+    </appender>
+
+
+    <appender name="EVENTLOG" class="com.netty.logging.encoder.CustomRollingFileAppenderAppender">
+        <file>/data/logs/netty/event_per_host/eventlog.log</file>
+        <encoder class="com.netty.logging.encoder.EventEncoder"/>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/data/logs/netty/event_per_host/eventlog.log.%d{yyyy-MM-dd-HH}.gz</fileNamePattern>
+            <maxHistory>90</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <appender name="ASYNC_EVENTLOG" queueSize="10000" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="EVENTLOG"/>
+        <includeCallerData>true</includeCallerData>
+    </appender>
+
+    <logger name="eventlog" additivity="false" level="INFO">
+        <appender-ref ref="ASYNC_EVENTLOG"/>
     </logger>
 
     <!-- Setting the root level of logging to INFO -->
     <root level="info">
-        <appender-ref ref="FILE" />
+        <appender-ref ref="ASYNC_FILE"/>
+        <!--<appender-ref ref="ASYNC_EVENTLOG" />-->
     </root>
 </configuration>

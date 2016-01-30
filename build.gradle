@@ -50,8 +50,15 @@ dependencies {
 //        exclude module: "spring-web"
         exclude module: "spring-webmvc"
     }
+    compile("com.google.code.gson:gson:2.3.1")
     compile("org.apache.mahout:mahout-core:0.9")
     compile("com.googlecode.json-simple:json-simple:1.1.1")
+    compile('org.apache.commons:commons-lang3:3.3.2')
+    compile("org.joda:joda-convert:1.7")
+    compile("joda-time:joda-time:2.7")
+    compile("org.springframework:spring-context-support:4.1.6.RELEASE")
+    compile("org.springframework:spring-tx:4.1.6.RELEASE")
+    compile("org.quartz-scheduler:quartz:2.2.1")
 
 }
 
@@ -78,7 +85,7 @@ jar {
 
     manifest.attributes('Implementation-Title': 'io-netty-4',
             'Implementation-Version': version,
-            'Main-Class': 'netty.HttpHelloWorldServer',
+            'Main-Class': 'com.netty.HttpHelloWorldServer',
             'Class-Path': classpath)
 
     exclude 'org.springframework:spring-web:4.2.3-RELEASE'
@@ -86,7 +93,7 @@ jar {
 }
 
 task start(type: JavaExec, dependsOn: classes) {
-    main 'netty.HttpHelloWorldServer'
+    main 'com.netty.HttpHelloWorldServer'
     classpath sourceSets.main.runtimeClasspath
     args '-jar', "$jar.archivePath", "8989"
     applicationDefaultJvmArgs = [
@@ -105,3 +112,11 @@ task startServer(type: Exec, dependsOn: jar) {
 applicationDefaultJvmArgs = [
         "-Denv=qa -Dlogback.configurationFile=System.properties['env']/logback.xml -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005"
 ]
+
+idea {
+
+    module {
+        downloadJavadoc = false
+        downloadSources = true
+    }
+}
