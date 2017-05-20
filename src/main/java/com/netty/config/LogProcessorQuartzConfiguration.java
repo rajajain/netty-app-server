@@ -12,7 +12,7 @@ import org.springframework.scheduling.quartz.SchedulerFactoryBean;
  * Created by raja .
  */
 @Configuration
-@ComponentScan("com.iw.analytics")
+@ComponentScan("com.netty")
 public class LogProcessorQuartzConfiguration {
 
     @Bean

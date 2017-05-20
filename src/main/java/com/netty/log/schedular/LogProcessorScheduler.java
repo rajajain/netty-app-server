@@ -1,13 +1,8 @@
 package com.netty.log.schedular;
 
-import com.netty.log.dto.EventDetails;
-import com.netty.log.handler.LogQueryHandler;
 import com.netty.util.ConfigFile;
-import com.netty.util.GsonUtils;
 import com.netty.util.SpringUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -16,8 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by raja .
@@ -62,21 +55,7 @@ public class LogProcessorScheduler extends QuartzJobBean {
 
                     try {
 
-                        JSONObject obj = (JSONObject) JSONValue.parseWithException(strLine);
-                        JSONObject responseObj = (JSONObject) obj.get("message");
-                        EventDetails eventDetails = GsonUtils.getInstanceWithExclusion().fromJson(responseObj.toJSONString(), EventDetails.class);
-                        if (StringUtils.isBlank(eventDetails.getClientId())) {
-                            eventDetails.setClientId("DUMMY_CLIENT_ID");
-                        }
-                        Map<String, Map<Long, EventDetails>> logEventsMap = LogQueryHandler.getLogEventsMap();
-                        if (logEventsMap.containsKey(eventDetails.getClientId())) {
-                            Map<Long, EventDetails> event = logEventsMap.get(eventDetails.getClientId());
-                            event.put(System.currentTimeMillis(), eventDetails);
-                        } else {
-                            Map<Long, EventDetails> event = new HashMap<>();
-                            event.put(System.currentTimeMillis(), eventDetails);
-                            logEventsMap.put(eventDetails.getClientId(), event);
-                        }
+
                     } catch (Exception e) {
                         LOGGER.error("Exception in from json conversion.", e);
                     }

@@ -6,7 +6,7 @@ import com.netty.annotation.RequestMapping;
 import com.netty.common.PortalException;
 import com.netty.common.ResponseType;
 import com.netty.handlers.IBaseRequestHandler;
-import com.netty.util.PortalConfig;
+import com.netty.util.Config;
 import io.netty.handler.codec.http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ public class ServerBaseHandler extends BaseHttpServerHandler {
 
 
     @Autowired
-    private PortalConfig portalConfig;
+    private Config config;
 
     private ApplicationContext applicationContext;
     private Map<String, IBaseRequestHandler> handlerClassMap = new ConcurrentHashMap<>();

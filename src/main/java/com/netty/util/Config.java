@@ -9,7 +9,7 @@ import org.springframework.core.io.ClassPathResource;
  * Created by raja on 02/12/15.
  */
 @Configuration
-public class PortalConfig {
+public class Config {
 
     @Autowired
     private ConfigFile properties;
